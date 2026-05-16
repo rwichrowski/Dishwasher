@@ -1,7 +1,11 @@
 package pl.radoslaw.zmywarka
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import pl.radoslaw.zmywarka.databinding.ActivityMainBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,5 +45,65 @@ class MainActivity : AppCompatActivity() {
         val nextPersonIndex = (personIndex + 1) % people.size
         val fmt = DateTimeFormatter.ofPattern("d MMMM", Locale("pl"))
         binding.tvQueue.text = "od ${nextMonday.format(fmt)}: ${people[nextPersonIndex]}"
+
+        buildCalendar()
+    }
+
+    private fun buildCalendar() {
+        val container = binding.calendarLayout
+        container.removeAllViews()
+
+        val today = LocalDate.now()
+        val currentMonday = today.minusDays((today.dayOfWeek.value - 1).toLong())
+        val fmtShort = DateTimeFormatter.ofPattern("d MMM", Locale("pl"))
+        val fmtFull = DateTimeFormatter.ofPattern("d MMMM", Locale("pl"))
+        val d = resources.displayMetrics.density
+        val padH = (10 * d).toInt()
+        val padV = (8 * d).toInt()
+        val rowMargin = (4 * d).toInt()
+
+        for (offset in -2..2) {
+            val monday = currentMonday.plusWeeks(offset.toLong())
+            val sunday = monday.plusDays(6)
+            val weekIndex = ChronoUnit.WEEKS.between(referenceMonday, monday)
+            val personIndex = ((weekIndex % people.size) + people.size).toInt() % people.size
+            val isCurrent = offset == 0
+
+            val dateStr = if (monday.month == sunday.month) {
+                "${monday.dayOfMonth}–${sunday.format(fmtFull)}"
+            } else {
+                "${monday.format(fmtShort)} – ${sunday.format(fmtShort)}"
+            }
+
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { bottomMargin = rowMargin }
+                setPadding(padH, padV, padH, padV)
+                if (isCurrent) setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.week_current_bg))
+                alpha = if (offset < 0) 0.5f else 1f
+            }
+
+            TextView(this).apply {
+                text = dateStr
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                if (isCurrent) setTypeface(null, Typeface.BOLD)
+                row.addView(this)
+            }
+
+            TextView(this).apply {
+                text = people[personIndex]
+                if (isCurrent) {
+                    setTypeface(null, Typeface.BOLD)
+                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.primary_blue))
+                }
+                row.addView(this)
+            }
+
+            container.addView(row)
+        }
     }
 }

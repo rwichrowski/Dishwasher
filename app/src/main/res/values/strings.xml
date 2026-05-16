@@ -4,6 +4,7 @@
     <string name="now_on_duty">Teraz dyżur ma:</string>
     <string name="done_button">Gotowe! Zmywarka rozpakowana</string>
     <string name="upcoming_queue">Następna zmiana:</string>
+    <string name="calendar_title">Kalendarz dyżurów</string>
     <string name="queue_only_one">Tylko jedna osoba na liście</string>
     <string name="reset">Resetuj kolejkę</string>
 </resources>
