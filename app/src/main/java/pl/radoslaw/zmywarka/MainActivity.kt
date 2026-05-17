@@ -1,5 +1,6 @@
 package pl.radoslaw.zmywarka
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.LinearLayout
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        binding.fabWeight.setOnClickListener {
+            startActivity(Intent(this, WeightActivity::class.java))
+        }
         updateUI()
     }
 

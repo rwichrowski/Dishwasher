@@ -7,4 +7,14 @@
     <string name="calendar_title">Kalendarz dyżurów</string>
     <string name="queue_only_one">Tylko jedna osoba na liście</string>
     <string name="reset">Resetuj kolejkę</string>
+
+    <string name="weight_fab_label">Waga</string>
+    <string name="weight_screen_title">Monitor wagi</string>
+    <string name="weight_new_entry">Nowy pomiar</string>
+    <string name="weight_date">Data</string>
+    <string name="weight_kg">Waga (kg)</string>
+    <string name="weight_calories">Kalorie (kcal) — opcjonalnie</string>
+    <string name="weight_save">Zapisz w bazie</string>
+    <string name="weight_update">Zaktualizuj wpis</string>
+    <string name="weight_history">Historia (ostatnie 30 dni)</string>
 </resources>

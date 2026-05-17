@@ -14,5 +14,8 @@ local.properties
 *.jks
 *.keystore
 
+# Firebase — contains API keys, never commit
+google-services.json
+
 # Claude Code
 .claude/
