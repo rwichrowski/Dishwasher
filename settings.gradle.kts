@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KtoMaDyzurNaZmywarke"
+rootProject.name = "Dishwasher"
 include(":app")
