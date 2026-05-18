@@ -2,10 +2,14 @@ package pl.radoslaw.zmywarka
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.abs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -26,12 +30,35 @@ class WeightActivity : AppCompatActivity() {
     private var cachedEntries: List<Triple<String, Double, Long?>> = emptyList()
     private var initialPrefillDone = false
 
+    private val gestureDetector by lazy {
+        GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val dx = e2.x - (e1?.x ?: return false)
+                val dy = e2.y - (e1.y)
+                if (abs(dx) > abs(dy) * 1.5f && dx > 100f && abs(velocityX) > 300f) {
+                    navigateBack()
+                    return true
+                }
+                return false
+            }
+        })
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWeightBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { navigateBack() }
+        })
 
         binding.etDate.setText(LocalDate.now().toString())
         binding.etDate.setOnClickListener { showDatePicker() }
@@ -142,7 +169,16 @@ class WeightActivity : AppCompatActivity() {
     private fun showToast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) { finish(); return true }
+        if (item.itemId == android.R.id.home) {
+            navigateBack()
+            return true
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun navigateBack() {
+        finish()
+        @Suppress("DEPRECATION")
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

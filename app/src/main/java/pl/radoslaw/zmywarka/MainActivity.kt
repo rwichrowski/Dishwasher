@@ -3,6 +3,8 @@ package pl.radoslaw.zmywarka
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +14,32 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
+import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val gestureDetector by lazy {
+        GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val dx = e2.x - (e1?.x ?: return false)
+                val dy = e2.y - (e1.y)
+                if (abs(dx) > abs(dy) * 1.5f && dx < -100f && abs(velocityX) > 300f) {
+                    startActivity(Intent(this@MainActivity, WeightActivity::class.java))
+                    @Suppress("DEPRECATION")
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    return true
+                }
+                return false
+            }
+        })
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
 
     private val people = listOf("Antek", "Weronika")
     // Poniedziałek, od którego zaczął Antek (indeks 0)
@@ -26,9 +50,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        binding.fabWeight.setOnClickListener {
-            startActivity(Intent(this, WeightActivity::class.java))
-        }
         updateUI()
     }
 

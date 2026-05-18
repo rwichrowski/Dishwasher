@@ -128,13 +128,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabWeight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:text="@string/weight_fab_label"
-        app:icon="@drawable/ic_scale" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
