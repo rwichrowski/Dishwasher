@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**"Kto ma dyżur na zmywarkę?"** — A Polish family chore rotation app for tracking dishwasher duty. Single-screen app that cycles through family members ("Mama", "Tata", "Radosław") and persists the current index via SharedPreferences.
+**"Kto ma dyżur na zmywarkę?"** — A Polish family chore rotation app tracking dishwasher duty, plus a secondary weight/calorie tracker screen backed by Firebase.
 
 - Package: `pl.radoslaw.zmywarka`
 - Min SDK: 26 (Android 8.0), Target/Compile SDK: 34 (Android 14)
@@ -12,42 +12,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build Commands
 
-```bash
-# Build debug APK
-./gradlew assembleDebug
-
-# Build release APK
-./gradlew assembleRelease
-
-# Install on connected device
-./gradlew installDebug
-
-# Run lint checks
-./gradlew lint
-
-# Clean build
-./gradlew clean
+```bat
+gradlew.bat assembleDebug
+gradlew.bat assembleRelease
+gradlew.bat installDebug
+gradlew.bat lint
+gradlew.bat clean
 ```
-
-On Windows, use `gradlew.bat` instead of `./gradlew`.
 
 ## Architecture
 
-Single-activity app, no tests, no ViewModel or dependency injection. All logic lives in `MainActivity.kt`:
+Two-activity app with no tests, no ViewModel, and no dependency injection.
 
-- **State persistence:** SharedPreferences stores the person list and current index
-- **UI binding:** View Binding (enabled in `app/build.gradle.kts`)
-- **Layout:** `activity_main.xml` — CoordinatorLayout with AppBar, two Material CardViews (current duty + queue), and a "Done" button
-- **Menu:** `main_menu.xml` — single "Reset" option to restart from the first person
+### MainActivity — Dishwasher Duty Rotation
+Duty assignment is **purely date-based**, calculated each time from a hardcoded `referenceMonday` (`LocalDate`) and the current date. No SharedPreferences; state is implicit in the calendar.
 
-The family member list is hardcoded in `MainActivity.kt`. To add/remove members, edit that list directly.
+- `people` list and `referenceMonday` are hardcoded at the top of `MainActivity.kt`. To change who rotates or the epoch week, edit those two fields.
+- `updateUI()` computes the current week index via `ChronoUnit.WEEKS.between(referenceMonday, currentMonday) % people.size`.
+- `buildCalendar()` renders a 5-week window (−2 to +2 from current) directly into `calendarLayout` (a `LinearLayout`) programmatically — no RecyclerView or adapter.
+- Swiping left navigates to `WeightActivity` with a slide-right animation.
 
-## Key Files
+### WeightActivity — Weight Tracker
+Firebase-backed screen accessible by swiping left from `MainActivity`. Swiping right (or pressing back) returns to `MainActivity`.
 
-- `app/src/main/java/pl/radoslaw/zmywarka/MainActivity.kt` — all app logic
-- `app/src/main/res/layout/activity_main.xml` — full UI layout
-- `app/src/main/res/values/strings.xml` — Polish UI strings
-- `app/src/main/res/values/themes.xml` — Material DayNight theme
+- **Auth:** Anonymous Firebase Auth (`signInAnonymously`). The userId is hardcoded as `"radek"`.
+- **Firestore path:** `artifacts/weight-tracker-cloud/users/radek/weights/{date}` — documents keyed by ISO date string (YYYY-MM-DD).
+- **Data:** Each document stores `date`, `weight` (Double), `timestamp`, and optional `calories` (Long).
+- `listenToEntries()` attaches a real-time snapshot listener filtered to the last 30 days.
+- The entry list is rendered programmatically into `listContainer` (`LinearLayout`) as `TextView`s.
+- When a date is selected via `DatePickerDialog`, the form pre-fills from `cachedEntries` if an entry already exists, and the save button switches label between "Zapisz" / "Zaktualizuj".
+
+### Navigation / Gesture System
+Both activities implement the same swipe-gesture pattern via `GestureDetector` in `dispatchTouchEvent`. Slide animations live in `res/anim/` (slide_in_right, slide_out_left, slide_in_left, slide_out_right).
 
 ## Dependencies
 
@@ -55,5 +51,6 @@ The family member list is hardcoded in `MainActivity.kt`. To add/remove members,
 - `androidx.appcompat:appcompat:1.6.1`
 - `com.google.android.material:material:1.11.0`
 - `androidx.constraintlayout:constraintlayout:2.1.4`
+- `com.google.firebase:firebase-bom:32.7.2` (Firestore + Auth via BOM)
 
-No Compose, no Room, no coroutines, no networking libraries.
+Firebase is configured via `google-services.json` (not checked in) and the `com.google.gms.google-services` Gradle plugin.

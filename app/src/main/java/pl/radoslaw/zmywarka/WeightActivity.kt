@@ -121,7 +121,7 @@ class WeightActivity : AppCompatActivity() {
         )
         calories?.let { data["calories"] = it }
 
-        weightsRef().document(date).set(data)
+        weightsRef().document(date).set(data, com.google.firebase.firestore.SetOptions.merge())
             .addOnSuccessListener { showToast("Zapisano!") }
             .addOnFailureListener { showToast("Błąd zapisu") }
     }
