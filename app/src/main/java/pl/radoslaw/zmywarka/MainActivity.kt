@@ -1,12 +1,18 @@
 package pl.radoslaw.zmywarka
 
+import android.app.AlarmManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import pl.radoslaw.zmywarka.databinding.ActivityMainBinding
@@ -42,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val people = listOf("Antek", "Weronika")
+    private val prefs by lazy { getSharedPreferences("prefs", MODE_PRIVATE) }
     // Poniedziałek, od którego zaczął Antek (indeks 0)
     private val referenceMonday = LocalDate.of(2026, 5, 11)
 
@@ -51,6 +58,48 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         updateUI()
+        requestNotificationPermission()
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), RC_NOTIF)
+                return
+            }
+        }
+        checkExactAlarmAndSchedule()
+    }
+
+    private fun checkExactAlarmAndSchedule() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val am = getSystemService(ALARM_SERVICE) as AlarmManager
+            if (!am.canScheduleExactAlarms() && !prefs.getBoolean("alarm_perm_asked", false)) {
+                prefs.edit().putBoolean("alarm_perm_asked", true).apply()
+                AlertDialog.Builder(this)
+                    .setTitle("Uprawnienie do alarmów")
+                    .setMessage("Aby powiadomienia (waga / kcal) były punktualne, zezwól aplikacji na planowanie dokładnych alarmów.")
+                    .setPositiveButton("Ustawienia") { _, _ ->
+                        startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                            Uri.parse("package:$packageName")))
+                    }
+                    .setNegativeButton("Pomiń", null)
+                    .show()
+                return
+            }
+        }
+        NotificationScheduler.scheduleAll(this)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == RC_NOTIF && grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+            checkExactAlarmAndSchedule()
+        }
+    }
+
+    companion object {
+        private const val RC_NOTIF = 42
     }
 
     override fun onResume() {
