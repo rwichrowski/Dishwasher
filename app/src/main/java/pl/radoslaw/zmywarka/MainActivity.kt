@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        binding.tvVersion.text = "v${BuildConfig.VERSION_NAME}"
         updateUI()
         requestNotificationPermission()
     }
