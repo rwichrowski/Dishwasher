@@ -14,6 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Zmywarka">
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -25,7 +30,8 @@
         <activity
             android:name=".WeightActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Zmywarka.Weight" />
 
         <receiver android:name=".NotificationReceiver" android:exported="false" />
 

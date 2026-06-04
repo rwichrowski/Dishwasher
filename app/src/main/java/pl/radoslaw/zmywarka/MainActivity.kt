@@ -3,7 +3,6 @@ package pl.radoslaw.zmywarka
 import android.app.AlarmManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import pl.radoslaw.zmywarka.databinding.ActivityMainBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -132,10 +132,11 @@ class MainActivity : AppCompatActivity() {
         val currentMonday = today.minusDays((today.dayOfWeek.value - 1).toLong())
         val fmtShort = DateTimeFormatter.ofPattern("d MMM", Locale("pl"))
         val fmtFull = DateTimeFormatter.ofPattern("d MMMM", Locale("pl"))
-        val d = resources.displayMetrics.density
-        val padH = (10 * d).toInt()
-        val padV = (8 * d).toInt()
-        val rowMargin = (4 * d).toInt()
+
+        val ink = ContextCompat.getColor(this, R.color.ink)
+        val archivo = ResourcesCompat.getFont(this, R.font.archivo_black)
+        val mono = ResourcesCompat.getFont(this, R.font.space_mono)
+        val monoBold = ResourcesCompat.getFont(this, R.font.space_mono_bold)
 
         for (offset in -2..2) {
             val monday = currentMonday.plusWeeks(offset.toLong())
@@ -153,27 +154,39 @@ class MainActivity : AppCompatActivity() {
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = android.view.Gravity.CENTER_VERTICAL
+                clipChildren = false
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { bottomMargin = rowMargin }
-                setPadding(padH, padV, padH, padV)
-                if (isCurrent) setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.week_current_bg))
-                alpha = if (offset < 0) 0.5f else 1f
+                ).apply { bottomMargin = dp(10) }
+                if (isCurrent) {
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.chip_current)
+                    setPadding(dp(14), dp(12), dp(18), dp(16))
+                } else {
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.row_neutral)
+                    setPadding(dp(14), dp(11), dp(14), dp(13))
+                }
+                alpha = if (offset < 0) 0.45f else 1f
             }
 
             TextView(this).apply {
-                text = dateStr
+                text = if (isCurrent) "▶ $dateStr" else dateStr
+                typeface = if (isCurrent) monoBold else mono
+                setTextColor(ink)
+                textSize = 13f
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                if (isCurrent) setTypeface(null, Typeface.BOLD)
                 row.addView(this)
             }
 
             TextView(this).apply {
                 text = people[personIndex]
+                setTextColor(ink)
                 if (isCurrent) {
-                    setTypeface(null, Typeface.BOLD)
-                    setTextColor(ContextCompat.getColor(this@MainActivity, R.color.primary_blue))
+                    typeface = archivo
+                    textSize = 16f
+                } else {
+                    typeface = monoBold
+                    textSize = 14f
                 }
                 row.addView(this)
             }
@@ -181,4 +194,6 @@ class MainActivity : AppCompatActivity() {
             container.addView(row)
         }
     }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

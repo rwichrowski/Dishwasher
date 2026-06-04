@@ -2,13 +2,16 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/paper">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/tomato"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -16,123 +19,161 @@
             android:layout_height="?attr/actionBarSize"
             app:title="@string/app_name" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/ink" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingHorizontal="18dp"
+            android:paddingTop="22dp"
+            android:paddingBottom="28dp">
 
-            <com.google.android.material.card.MaterialCardView
+            <!-- ===== HERO: who is on duty ===== -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/card_tomato"
+                android:orientation="vertical"
+                android:paddingStart="26dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="33dp"
+                android:paddingBottom="31dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="32dp">
+                    android:text="@string/now_on_duty"
+                    android:textAppearance="@style/TextAppearance.Brutal.Label"
+                    android:textColor="@color/ink" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/now_on_duty"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
+                <TextView
+                    android:id="@+id/tvCurrentPerson"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textAppearance="@style/TextAppearance.Brutal.Hero"
+                    tools:text="Antek" />
 
-                    <TextView
-                        android:id="@+id/tvCurrentPerson"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?attr/textAppearanceDisplaySmall"
-                        android:textColor="?attr/colorPrimary"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/hero_caption"
+                    android:textAppearance="@style/TextAppearance.Brutal.Label"
+                    android:textColor="@color/ink" />
 
+            </LinearLayout>
 
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
+            <!-- ===== Next in line ===== -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/card_sun"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="22dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="30dp"
+                android:paddingBottom="25dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="↻"
+                    android:textColor="@color/ink"
+                    android:textSize="30sp"
+                    android:layout_marginEnd="16dp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
                         android:text="@string/upcoming_queue"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        android:textAppearance="@style/TextAppearance.Brutal.Label"
+                        android:textColor="@color/ink" />
 
                     <TextView
                         android:id="@+id/tvQueue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.6"
-                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/space_mono_bold"
+                        android:textColor="@color/ink"
+                        android:textSize="15sp"
+                        tools:text="od 18 maja: Weronika" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <!-- ===== Rotation calendar ===== -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                android:background="@drawable/card_cream"
+                android:orientation="vertical"
+                android:paddingStart="22dp"
+                android:paddingTop="22dp"
+                android:paddingEnd="28dp"
+                android:paddingBottom="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/calendar_title"
+                    android:textAppearance="@style/TextAppearance.Brutal.Section" />
 
                 <LinearLayout
+                    android:id="@+id/calendarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:clipChildren="false"
+                    android:orientation="vertical" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="@string/calendar_title"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/calendarLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+            <!-- ===== Swipe hint + version ===== -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center"
+                android:text="@string/swipe_to_weight"
+                android:textAppearance="@style/TextAppearance.Brutal.Label" />
 
             <TextView
                 android:id="@+id/tvVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:alpha="0.5"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/space_mono"
                 android:gravity="center"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="11sp" />
+                android:textColor="@color/ink_soft"
+                android:textSize="11sp"
+                tools:text="v1.0" />
 
         </LinearLayout>
 

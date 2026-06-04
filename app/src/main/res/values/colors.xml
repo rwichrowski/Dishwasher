@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Neo-brutalist kitchen palette -->
+    <color name="paper">#F4E9D4</color>        <!-- warm cream background -->
+    <color name="cream">#FFFBF0</color>        <!-- card surface -->
+    <color name="white">#FFFFFF</color>
+    <color name="ink">#161412</color>          <!-- borders, text, hard shadow -->
+    <color name="ink_soft">#6B6356</color>     <!-- muted labels -->
+
+    <color name="tomato">#FF5638</color>       <!-- duty / primary accent -->
+    <color name="tomato_dark">#E23A1E</color>
+    <color name="sun">#FFC83D</color>          <!-- yellow accent -->
+    <color name="mint">#21C7A8</color>         <!-- weight screen accent -->
+    <color name="mint_dark">#12A98C</color>
+
+    <!-- legacy names still referenced elsewhere -->
+    <color name="background">#F4E9D4</color>
+    <color name="week_current_bg">#FFC83D</color>
+    <color name="primary_blue">#FF5638</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="background">#FFF3F4F6</color>
-    <color name="week_current_bg">#E3F2FD</color>
-    <color name="primary_blue">#1976D2</color>
 </resources>

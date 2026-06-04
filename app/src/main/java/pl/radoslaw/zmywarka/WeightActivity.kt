@@ -2,13 +2,17 @@ package pl.radoslaw.zmywarka
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.Gravity
 import android.view.GestureDetector
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import kotlin.math.abs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -149,17 +153,89 @@ class WeightActivity : AppCompatActivity() {
     private fun renderList(entries: List<Triple<String, Double, Long?>>) {
         val container = binding.listContainer
         container.removeAllViews()
-        val d = resources.displayMetrics.density
-        entries.forEach { (date, weight, calories) ->
-            val cal = if (calories != null) "  ·  $calories kcal" else ""
+
+        val ink = ContextCompat.getColor(this, R.color.ink)
+        val inkSoft = ContextCompat.getColor(this, R.color.ink_soft)
+        val archivo = ResourcesCompat.getFont(this, R.font.archivo_black)
+        val mono = ResourcesCompat.getFont(this, R.font.space_mono)
+        val monoBold = ResourcesCompat.getFont(this, R.font.space_mono_bold)
+
+        if (entries.isEmpty()) {
             TextView(this).apply {
-                text = "$date   ${"%.1f".format(weight)} kg$cal"
-                textSize = 14f
-                setPadding(0, (12 * d).toInt(), 0, (12 * d).toInt())
+                text = getString(R.string.weight_empty)
+                typeface = mono
+                setTextColor(inkSoft)
+                textSize = 13f
+                setPadding(0, dp(14), 0, dp(6))
                 container.addView(this)
+            }
+            return
+        }
+
+        entries.forEachIndexed { index, (date, weight, calories) ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, dp(14), 0, dp(14))
+            }
+
+            TextView(this).apply {
+                text = date
+                typeface = mono
+                setTextColor(inkSoft)
+                textSize = 13f
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                row.addView(this)
+            }
+
+            TextView(this).apply {
+                text = "%.1f".format(weight)
+                typeface = archivo
+                setTextColor(ink)
+                textSize = 20f
+                row.addView(this)
+            }
+
+            TextView(this).apply {
+                text = " kg"
+                typeface = mono
+                setTextColor(inkSoft)
+                textSize = 12f
+                row.addView(this)
+            }
+
+            if (calories != null) {
+                TextView(this).apply {
+                    text = "$calories kcal"
+                    typeface = monoBold
+                    setTextColor(ink)
+                    textSize = 11f
+                    background = ContextCompat.getDrawable(this@WeightActivity, R.drawable.pill_sun)
+                    setPadding(dp(10), dp(4), dp(10), dp(5))
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply { marginStart = dp(12) }
+                    row.addView(this)
+                }
+            }
+
+            container.addView(row)
+
+            if (index < entries.size - 1) {
+                val divider = android.view.View(this).apply {
+                    setBackgroundColor(ink)
+                    alpha = 0.12f
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, dp(2)
+                    )
+                }
+                container.addView(divider)
             }
         }
     }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
     private fun weightsRef() = db
         .collection("artifacts").document(appId)
