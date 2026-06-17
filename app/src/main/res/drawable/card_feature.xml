@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The featured "duty this week" block — the single dominant terracotta accent -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:left="3dp" android:top="4dp" android:right="0dp" android:bottom="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#33000000" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:right="3dp" android:bottom="4dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="115"
+                android:startColor="#CB5530"
+                android:endColor="@color/terracotta"
+                android:type="linear" />
+            <stroke android:width="1.5dp" android:color="@color/terracotta_ink" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+</layer-list>

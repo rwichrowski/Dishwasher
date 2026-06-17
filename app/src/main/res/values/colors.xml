@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Neo-brutalist kitchen palette -->
-    <color name="paper">#F4E9D4</color>        <!-- warm cream background -->
-    <color name="cream">#FFFBF0</color>        <!-- card surface -->
+    <!-- ============================================================
+         "ALMANACH" palette — warm botanical kitchen almanac
+         Parchment ground · pine ink · terracotta / ochre / verdigris
+         ============================================================ -->
+
+    <color name="paper">#ECE3CD</color>        <!-- warm parchment ground -->
+    <color name="paper_deep">#E2D6B9</color>    <!-- gradient bottom / vignette -->
+    <color name="cream">#F6EFDC</color>         <!-- panel / card surface -->
+    <color name="bone">#FBF6E9</color>          <!-- lightest panel (forms) -->
     <color name="white">#FFFFFF</color>
-    <color name="ink">#161412</color>          <!-- borders, text, hard shadow -->
-    <color name="ink_soft">#6B6356</color>     <!-- muted labels -->
 
-    <color name="tomato">#FF5638</color>       <!-- duty / primary accent -->
-    <color name="tomato_dark">#E23A1E</color>
-    <color name="sun">#FFC83D</color>          <!-- yellow accent -->
-    <color name="mint">#21C7A8</color>         <!-- weight screen accent -->
-    <color name="mint_dark">#12A98C</color>
+    <color name="ink">#1E2A24</color>           <!-- deep pine ink: text, rules -->
+    <color name="ink_soft">#5C6657</color>      <!-- muted sage: labels, captions -->
+    <color name="rule">#C7B894</color>          <!-- warm hairline rule -->
+    <color name="rule_soft">#D8CBA9</color>     <!-- faint rule -->
 
-    <!-- legacy names still referenced elsewhere -->
-    <color name="background">#F4E9D4</color>
-    <color name="week_current_bg">#FFC83D</color>
-    <color name="primary_blue">#FF5638</color>
+    <color name="terracotta">#C24E2C</color>    <!-- PRIMARY hot accent — duty -->
+    <color name="terracotta_dark">#9E3C20</color>
+    <color name="terracotta_ink">#7A2E18</color> <!-- keyline on terracotta -->
+
+    <color name="ochre">#CE8A1E</color>         <!-- secondary accent -->
+    <color name="ochre_deep">#A86C12</color>
+
+    <color name="verdigris">#2C7A6A</color>     <!-- ledger / weight accent -->
+    <color name="verdigris_dark">#1E5C50</color>
+    <color name="verdigris_ink">#16463C</color>
+
+    <color name="butter">#E9D6A2</color>        <!-- soft highlight fill -->
+
+    <!-- legacy names kept mapped so nothing breaks -->
+    <color name="background">#ECE3CD</color>
+    <color name="week_current_bg">#CE8A1E</color>
+    <color name="primary_blue">#C24E2C</color>
+    <color name="tomato">#C24E2C</color>
+    <color name="tomato_dark">#9E3C20</color>
+    <color name="sun">#CE8A1E</color>
+    <color name="mint">#2C7A6A</color>
+    <color name="mint_dark">#1E5C50</color>
     <color name="black">#FF000000</color>
 </resources>

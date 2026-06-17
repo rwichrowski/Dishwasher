@@ -156,27 +156,30 @@ class WeightActivity : AppCompatActivity() {
 
         val ink = ContextCompat.getColor(this, R.color.ink)
         val inkSoft = ContextCompat.getColor(this, R.color.ink_soft)
-        val archivo = ResourcesCompat.getFont(this, R.font.archivo_black)
-        val mono = ResourcesCompat.getFont(this, R.font.space_mono)
-        val monoBold = ResourcesCompat.getFont(this, R.font.space_mono_bold)
+        val ochreDeep = ContextCompat.getColor(this, R.color.ochre_deep)
+        val fraunces = ResourcesCompat.getFont(this, R.font.fraunces_semibold)
+        val italic = ResourcesCompat.getFont(this, R.font.fraunces_italic)
+        val mono = ResourcesCompat.getFont(this, R.font.dm_mono)
+        val monoMed = ResourcesCompat.getFont(this, R.font.dm_mono_medium)
 
         if (entries.isEmpty()) {
             TextView(this).apply {
                 text = getString(R.string.weight_empty)
-                typeface = mono
+                typeface = italic
                 setTextColor(inkSoft)
-                textSize = 13f
-                setPadding(0, dp(14), 0, dp(6))
+                textSize = 16f
+                setPadding(0, dp(16), 0, dp(8))
                 container.addView(this)
             }
             return
         }
 
-        entries.forEachIndexed { index, (date, weight, calories) ->
+        entries.forEach { (date, weight, calories) ->
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                setPadding(0, dp(14), 0, dp(14))
+                background = ContextCompat.getDrawable(this@WeightActivity, R.drawable.row_rule)
+                setPadding(0, dp(15), 0, dp(15))
             }
 
             TextView(this).apply {
@@ -184,15 +187,16 @@ class WeightActivity : AppCompatActivity() {
                 typeface = mono
                 setTextColor(inkSoft)
                 textSize = 13f
+                letterSpacing = 0.02f
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 row.addView(this)
             }
 
             TextView(this).apply {
                 text = "%.1f".format(weight)
-                typeface = archivo
+                typeface = fraunces
                 setTextColor(ink)
-                textSize = 20f
+                textSize = 23f
                 row.addView(this)
             }
 
@@ -207,10 +211,10 @@ class WeightActivity : AppCompatActivity() {
             if (calories != null) {
                 TextView(this).apply {
                     text = "$calories kcal"
-                    typeface = monoBold
-                    setTextColor(ink)
+                    typeface = monoMed
+                    setTextColor(ochreDeep)
                     textSize = 11f
-                    background = ContextCompat.getDrawable(this@WeightActivity, R.drawable.pill_sun)
+                    background = ContextCompat.getDrawable(this@WeightActivity, R.drawable.pill_ochre)
                     setPadding(dp(10), dp(4), dp(10), dp(5))
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -221,17 +225,6 @@ class WeightActivity : AppCompatActivity() {
             }
 
             container.addView(row)
-
-            if (index < entries.size - 1) {
-                val divider = android.view.View(this).apply {
-                    setBackgroundColor(ink)
-                    alpha = 0.12f
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, dp(2)
-                    )
-                }
-                container.addView(divider)
-            }
         }
     }
 

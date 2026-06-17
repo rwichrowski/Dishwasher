@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/archivo_black</item>
-        <item>@font/space_mono</item>
-        <item>@font/space_mono_bold</item>
+        <item>@font/fraunces_black</item>
+        <item>@font/fraunces_semibold</item>
+        <item>@font/fraunces</item>
+        <item>@font/fraunces_italic</item>
+        <item>@font/dm_mono</item>
+        <item>@font/dm_mono_medium</item>
     </array>
 </resources>

@@ -19,6 +19,7 @@ import pl.radoslaw.zmywarka.databinding.ActivityMainBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.abs
 
@@ -109,17 +110,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
+        val pl = Locale("pl")
         val today = LocalDate.now()
         val monday = today.minusDays((today.dayOfWeek.value - 1).toLong())
+        val sunday = monday.plusDays(6)
         val weekIndex = ChronoUnit.WEEKS.between(referenceMonday, monday)
         val personIndex = ((weekIndex % people.size) + people.size).toInt() % people.size
 
         binding.tvCurrentPerson.text = people[personIndex]
 
+        // Masthead edition line — "✦  TYDZIEŃ 24 · 2026  ✦"
+        val weekOfYear = monday.get(WeekFields.ISO.weekOfWeekBasedYear())
+        binding.tvWeekKicker.text = "✦  TYDZIEŃ $weekOfYear · ${monday.year}  ✦"
+
+        // Hero week range — "11–17 MAJA · TYDZIEŃ DYŻURU"
+        val fmtFull = DateTimeFormatter.ofPattern("d MMMM", pl)
+        val fmtShort = DateTimeFormatter.ofPattern("d MMM", pl)
+        val range = if (monday.month == sunday.month)
+            "${monday.dayOfMonth}–${sunday.format(fmtFull)}"
+        else
+            "${monday.format(fmtShort)} – ${sunday.format(fmtShort)}"
+        binding.tvHeroDates.text = "${range.uppercase(pl)} · TYDZIEŃ DYŻURU"
+
         val nextMonday = monday.plusWeeks(1)
         val nextPersonIndex = (personIndex + 1) % people.size
-        val fmt = DateTimeFormatter.ofPattern("d MMMM", Locale("pl"))
-        binding.tvQueue.text = "od ${nextMonday.format(fmt)}: ${people[nextPersonIndex]}"
+        binding.tvQueue.text = "od ${nextMonday.format(fmtFull)} — ${people[nextPersonIndex]}"
 
         buildCalendar()
     }
@@ -134,9 +149,12 @@ class MainActivity : AppCompatActivity() {
         val fmtFull = DateTimeFormatter.ofPattern("d MMMM", Locale("pl"))
 
         val ink = ContextCompat.getColor(this, R.color.ink)
-        val archivo = ResourcesCompat.getFont(this, R.font.archivo_black)
-        val mono = ResourcesCompat.getFont(this, R.font.space_mono)
-        val monoBold = ResourcesCompat.getFont(this, R.font.space_mono_bold)
+        val inkSoft = ContextCompat.getColor(this, R.color.ink_soft)
+        val terracotta = ContextCompat.getColor(this, R.color.terracotta)
+        val fraunces = ResourcesCompat.getFont(this, R.font.fraunces_semibold)
+        val frauncesLight = ResourcesCompat.getFont(this, R.font.fraunces)
+        val mono = ResourcesCompat.getFont(this, R.font.dm_mono)
+        val monoMed = ResourcesCompat.getFont(this, R.font.dm_mono_medium)
 
         for (offset in -2..2) {
             val monday = currentMonday.plusWeeks(offset.toLong())
@@ -154,39 +172,40 @@ class MainActivity : AppCompatActivity() {
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = android.view.Gravity.CENTER_VERTICAL
-                clipChildren = false
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { bottomMargin = dp(10) }
+                )
                 if (isCurrent) {
-                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.chip_current)
-                    setPadding(dp(14), dp(12), dp(18), dp(16))
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.row_current)
+                    setPadding(dp(16), dp(15), dp(8), dp(15))
                 } else {
-                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.row_neutral)
-                    setPadding(dp(14), dp(11), dp(14), dp(13))
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.row_rule)
+                    setPadding(dp(4), dp(14), dp(8), dp(14))
                 }
-                alpha = if (offset < 0) 0.45f else 1f
+                alpha = if (offset < 0) 0.4f else 1f
             }
 
             TextView(this).apply {
-                text = if (isCurrent) "▶ $dateStr" else dateStr
-                typeface = if (isCurrent) monoBold else mono
-                setTextColor(ink)
+                text = if (isCurrent) "▸  $dateStr" else dateStr
+                typeface = if (isCurrent) monoMed else mono
+                setTextColor(if (isCurrent) ink else inkSoft)
                 textSize = 13f
+                letterSpacing = 0.02f
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 row.addView(this)
             }
 
             TextView(this).apply {
                 text = people[personIndex]
-                setTextColor(ink)
                 if (isCurrent) {
-                    typeface = archivo
-                    textSize = 16f
+                    typeface = fraunces
+                    setTextColor(terracotta)
+                    textSize = 20f
                 } else {
-                    typeface = monoBold
-                    textSize = 14f
+                    typeface = frauncesLight
+                    setTextColor(ink)
+                    textSize = 17f
                 }
                 row.addView(this)
             }
