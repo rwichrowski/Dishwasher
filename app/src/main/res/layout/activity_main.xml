@@ -267,7 +267,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:gravity="center"
-                android:text="@string/swipe_to_weight"
+                android:text="@string/footer_note"
                 android:textAppearance="@style/TextAppearance.Almanac.Caption" />
 
             <TextView
